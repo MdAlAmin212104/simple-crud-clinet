@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 const User = () => {
-      const user = useLoaderData();
-      const handleDeleteUser = (id) => {
-            console.log(id);
-            fetch(`http://localhost:3000/users/${id}`, {
+      const loadedUser = useLoaderData();
+
+
+      const [users, setUsers] = useState(loadedUser)
+
+
+
+      const handleDeleteUser = (_id) => {
+            console.log(_id);
+            fetch(`http://localhost:3000/users/${_id}`, {
                   method: 'DELETE',
 
             })
                   .then(res => res.json())
                   .then(data => {
                         console.log(data);
+                        
                         if (data.deletedCount > 0) {
-                              alert('user deleted successfully')
+                              alert('user deleted successfully');
+                              const remaining = users.filter(user => user._id !== _id);
+                              setUsers(remaining);
+
                         }
                   })
 
       }
       return (
             <div>
-                  <h2>{user.length}</h2>
+                  <h2>{users.length}</h2>
                   {
-                        user.map(user => <p
+                        users.map(user => <p
                               key={user._id}
                         >{user.name} : {user.email} <button
                                     onClick={() => handleDeleteUser(user._id)}
